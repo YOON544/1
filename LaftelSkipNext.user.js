@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Laftel Skip Next
 // @namespace    https://gist.github.com/Ariette/a8e168d6a612c2d75a34bb7fb352e712
-// @version      0.3
+// @version      0.3.1
 // @description  라프텔에서 다음화 보기 카운트다운을 무시하고 바로 다음화로 넘어가는 유저스크립트
 // @author       Ariette
 // @match        https://laftel.net/*
@@ -46,12 +46,13 @@
 
 
     // 스크립트 켜기/끄기 Notification(기본값 : 0.5초)
-    const notiOn = '<div style="position:fixed; top:20px; left:20px; z-index:9000; background-color:black; color:white; padding:4px 8px; font-size:.8rem; border:1px solid #fff;" id="laftelSkipNextNoti">자동 넘김 On</div>'
-    const notiOff = '<div style="position:fixed; top:20px; left:20px; z-index:9000; background-color:black; color:white; padding:4px 8px; font-size:.8rem; border:1px solid #fff;" id="laftelSkipNextNoti">자동 넘김 Off</div>'
+    const notiOn = '<div style="position:fixed; top:20px; left:20px; z-index:999999; background-color:black; color:white; padding:4px 8px; font-size:.8rem; border:1px solid #fff;" id="laftelSkipNextNoti">자동 넘김 On</div>'
+    const notiOff = '<div style="position:fixed; top:20px; left:20px; z-index:999999; background-color:black; color:white; padding:4px 8px; font-size:.8rem; border:1px solid #fff;" id="laftelSkipNextNoti">자동 넘김 Off</div>'
     const notify = (html) => {
         const template = document.createElement('template');
         template.innerHTML = html;
-        const noti = container.appendChild(template.content.firstChild);
+        const wrapper = container.querySelector('.video') ?? container;
+        const noti = wrapper.appendChild(template.content.firstChild);
         setTimeout(() => {
             noti.remove();
         }, 500)
