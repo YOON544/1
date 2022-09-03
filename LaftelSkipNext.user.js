@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Laftel Skip Next
 // @namespace    https://gist.github.com/Ariette/a8e168d6a612c2d75a34bb7fb352e712
-// @version      0.5
+// @version      0.6
 // @description  라프텔에서 다음화 보기 카운트다운을 무시하고 바로 다음화로 넘어가는 유저스크립트
 // @author       Ariette
 // @match        https://laftel.net/*
@@ -15,9 +15,9 @@
     const container = document.getElementById('root');
     const config = { childList: true, subtree: true };
     const observer = new MutationObserver((m, o) => {
-        const links = container.querySelectorAll('div.App > div > div > div > div > div > button');
+        const links = container.querySelectorAll('div.App > div > div > div > div > div > div > div > div > div > div > button');
         for (const link of links) {
-            if (link.innerText.indexOf("다음화 재생") !== -1) {
+            if (link.innerText.indexOf("바로 재생") !== -1) {
                 o.disconnect();
                 link.click();
                 return;
