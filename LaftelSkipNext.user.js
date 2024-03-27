@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Laftel Skip Next
 // @namespace    https://gist.github.com/Ariette/a8e168d6a612c2d75a34bb7fb352e712
-// @version      0.7
+// @version      0.8
 // @description  라프텔에서 다음화 보기 카운트다운을 무시하고 바로 다음화로 넘어가는 유저스크립트
 // @author       Ariette
 // @match        https://laftel.net/*
@@ -15,9 +15,9 @@
     const container = document.getElementById('root');
     const config = { childList: true, subtree: true };
     const observer = new MutationObserver((m, o) => {
-        const links = container.querySelectorAll('div.App > div > div > div > div > div > div > div > div > div > div > button');
+        const links = container.getElementsByTagName('button');
         for (const link of links) {
-            if (link.innerText.indexOf("바로 재생") !== -1) {
+            if (link.innerText.indexOf("바로 재생") !== -1 && link.checkVisibility()) {
                 link.click();
                 return;
             }
@@ -43,6 +43,7 @@
         // 플레이어 페이지에서만 MutationObserver 동작
         if (window.location.pathname.indexOf('player') === 1) {
             if (log) console.log("LSN : 플레이어 페이지를 찾았습니다.");
+            observer.disconnect();
             observer.observe(container, config);
             return;
         }
@@ -52,12 +53,13 @@
     }
 
     // 스크립트 켜기/끄기 Notification(기본값 : 0.5초)
-    const notiOn = '<div style="position:fixed; top:20px; left:20px; z-index:999999; background-color:black; color:white; padding:4px 8px; font-size:.8rem; border:1px solid #fff;" id="laftelSkipNextNoti">자동 넘김 On</div>'
-    const notiOff = '<div style="position:fixed; top:20px; left:20px; z-index:999999; background-color:black; color:white; padding:4px 8px; font-size:.8rem; border:1px solid #fff;" id="laftelSkipNextNoti">자동 넘김 Off</div>'
-    const notify = (html) => {
+    const notiOn = '<div style="position:absolute; top:20px; left:20px; z-index:999999; background-color:black; color:white; padding:4px 8px; font-size:.8rem; border:1px solid #fff;" id="laftelSkipNextNoti">자동 넘김 On</div>'
+    const notiOff = '<div style="position:absolute; top:20px; left:20px; z-index:999999; background-color:black; color:white; padding:4px 8px; font-size:.8rem; border:1px solid #fff;" id="laftelSkipNextNoti">자동 넘김 Off</div>'
+    const notify = (htm) => {
         const template = document.createElement('template');
-        template.innerHTML = html;
+        template.innerHTML = htm;
         const wrapper = container.getElementsByTagName('video')[0]?.parentNode ?? container;
+        console.log(wrapper);
         const noti = wrapper.appendChild(template.content.firstChild);
         setTimeout(() => {
             noti.remove();
